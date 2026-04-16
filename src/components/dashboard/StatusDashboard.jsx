@@ -1,10 +1,11 @@
 import StatusCard from "./StatusCard";
+import { statusValues } from "../../utils/statusMap";
 
 function StatusDashboard({jobs, selectedStatus, onSelectStatus}){
-    const appliedCount = jobs.filter((job) => job.status === "Applied").length;
-    const interviewCount = jobs.filter((job) => job.status === "Interview").length;
-    const rejectedCount = jobs.filter((job) => job.status === "Rejected").length;
-    const offerCount = jobs.filter((job) => job.status === "Offer").length;
+   const appliedCount = jobs.filter((job) => job.status === statusValues.Applied).length;
+   const interviewCount = jobs.filter((job) => job.status === statusValues.Interview).length;
+   const rejectedCount = jobs.filter((job) => job.status === statusValues.Rejected).length;
+   const offerCount = jobs.filter((job) => job.status === statusValues.Offer).length;
     
 
     return (
@@ -12,26 +13,26 @@ function StatusDashboard({jobs, selectedStatus, onSelectStatus}){
       <StatusCard
         title="Applied"
         count={appliedCount}
-        active={selectedStatus === "Applied"}
-        onClick={() => onSelectStatus("Applied")}
+        active={selectedStatus === statusValues.Applied}
+        onClick={() => onSelectStatus(statusValues.Applied)}
       />
       <StatusCard
         title="Interview"
         count={interviewCount}
-        active={selectedStatus === "Interview"}
-        onClick={() => onSelectStatus("Interview")}
+        active={selectedStatus === statusValues.Interview}
+        onClick={() => onSelectStatus(statusValues.Interview)}
       />
       <StatusCard
         title="Rejected"
         count={rejectedCount}
-        active={selectedStatus === "Rejected"}
-        onClick={() => onSelectStatus("Rejected")}
+        active={selectedStatus === statusValues.Rejected}
+        onClick={() => onSelectStatus(statusValues.Rejected)}
       />
       <StatusCard
         title="Offer"
         count={offerCount}
-        active={selectedStatus === "Offer"}
-        onClick={() => onSelectStatus("Offer")}
+        active={selectedStatus === statusValues.Offer}
+        onClick={() => onSelectStatus(statusValues.Offer)}
       />
     </section>
   );

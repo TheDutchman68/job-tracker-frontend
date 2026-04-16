@@ -1,53 +1,54 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import StatusDashboard from "../components/dashboard/StatusDashboard";
 import JobsToolbar from "../components/jobs/JobsToolbar";
 import JobsTable from "../components/jobs/JobsTable";
 import ProtectedMessage from "../components/common/ProtectedMessage";
 import JobModal from "../components/jobs/JobModal";
+import { getJobs, createJob, deleteJob } from "../services/jobService";
 import "../styles/jobs.css";
 
 function JobTrackerPage() {
   const { isAuthenticated } = useAuth();
-
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [jobs, setJobs] = useState([
-    {
-      id: 1,
-      position: "Frontend Developer",
-      company: "Google",
-      status: "Applied",
-      location: "Remote",
-    },
-    {
-      id: 2,
-      position: "React Developer",
-      company: "Meta",
-      status: "Interview",
-      location: "Amsterdam",
-    },
-    {
-      id: 3,
-      position: "UI Engineer",
-      company: "Spotify",
-      status: "Rejected",
-      location: "Remote",
-    },
-    {
-      id: 4,
-      position: "Software Engineer",
-      company: "Booking",
-      status: "Offer",
-      location: "Amsterdam",
-    },
-  ]);
+  const [jobs, setJobs] = useState([]);
 
-  const filteredJobs = selectedStatus ? jobs.filter((job) => job.status === selectedStatus) : jobs;
+  useEffect(() => {
+  if (!isAuthenticated) return;
 
-  const handleAddJob = (newJob) => {
-    setJobs((prev) => [newJob, ...prev]);
+  const fetchJobs = async () => {
+    try {
+      const data = await getJobs();
+      setJobs(data);
+    } catch (err) {
+      console.error("Failed to load jobs", err);
+    }
   };
+
+  fetchJobs();
+}, [isAuthenticated]);
+
+  const handleDeleteJob = async (id) => {
+  try {
+    await deleteJob(id);
+    setJobs((prev) => prev.filter((job) => job.id !== id));
+  } catch (err) {
+    console.error("Failed to delete job", err);
+  }
+};
+
+
+  const filteredJobs = selectedStatus !== null ? jobs.filter((job) => job.status === selectedStatus) : jobs;
+
+  const handleAddJob = async (newJob) => {
+  try {
+    const created = await createJob(newJob);
+    setJobs((prev) => [created, ...prev]);
+  } catch (err) {
+    console.error("Failed to create job", err);
+  }
+};
 
   const handleOpenModal = () => {
     if (!isAuthenticated) return;
@@ -69,7 +70,7 @@ function JobTrackerPage() {
           jobs={jobs}
           selectedStatus={selectedStatus}
           onSelectStatus={(status) =>
-            setSelectedStatus((prev) => (prev === status ? "" : status))
+            setSelectedStatus((prev) => (prev === status ? null : status))
           }
         />
 
@@ -78,7 +79,7 @@ function JobTrackerPage() {
           onAddJob={handleOpenModal}
         />
 
-        <JobsTable jobs={filteredJobs} />
+        <JobsTable jobs={filteredJobs} onDeleteJob={handleDeleteJob} />
 
         <JobModal
           isOpen={isModalOpen}

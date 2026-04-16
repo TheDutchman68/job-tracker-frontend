@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { X } from 'lucide-react';
-
+import { statusValues } from "../../utils/statusMap";
 function JobModal({ isOpen, onClose, onAddJob}){
     const [formData, setFormData] = useState({
         company: "",
@@ -57,7 +57,14 @@ function JobModal({ isOpen, onClose, onAddJob}){
 
         if (!validateForm()) return;
 
-        const newJob = { id: Date.now(), ...formData,};
+  
+
+        const newJob = {
+          position: formData.position,
+          company: formData.company,
+          status: statusValues[formData.status],
+          location: formData.location,
+        };
 
         onAddJob(newJob);
 

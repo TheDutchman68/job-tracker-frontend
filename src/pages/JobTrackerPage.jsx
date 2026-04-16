@@ -4,13 +4,15 @@ import StatusDashboard from "../components/dashboard/StatusDashboard";
 import JobsToolbar from "../components/jobs/JobsToolbar";
 import JobsTable from "../components/jobs/JobsTable";
 import ProtectedMessage from "../components/common/ProtectedMessage";
+import JobModal from "../components/jobs/JobModal";
 import "../styles/jobs.css";
 
 function JobTrackerPage() {
   const { isAuthenticated } = useAuth();
 
   const [selectedStatus, setSelectedStatus] = useState("");
-  const [jobs] = useState([
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [jobs, setJobs] = useState([
     {
       id: 1,
       position: "Frontend Developer",
@@ -43,10 +45,13 @@ function JobTrackerPage() {
 
   const filteredJobs = selectedStatus ? jobs.filter((job) => job.status === selectedStatus) : jobs;
 
-  const handleAddJob = () => {
-    if (!isAuthenticated) return;
+  const handleAddJob = (newJob) => {
+    setJobs((prev) => [newJob, ...prev]);
+  };
 
-    console.log("Open add job modal");
+  const handleOpenModal = () => {
+    if (!isAuthenticated) return;
+    setIsModalOpen(true);
   };
 
   return (
@@ -70,11 +75,19 @@ function JobTrackerPage() {
 
         <JobsToolbar
           isAuthenticated={isAuthenticated}
-          onAddJob={handleAddJob}
+          onAddJob={handleOpenModal}
         />
 
         <JobsTable jobs={filteredJobs} />
+
+        <JobModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onAddJob={handleAddJob}
+          />
+
       </>
+      
     )}
     </section>
   );

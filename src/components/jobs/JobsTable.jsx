@@ -30,7 +30,7 @@ function JobsTable({ jobs, onDeleteJob }) {
             ))
           ) : (
             <tr>
-              <td colSpan="4" className="empty-table">
+              <td className="empty-table">
                 No jobs found.
               </td>
             </tr>

@@ -35,6 +35,15 @@
   transform: translateY(-3px);
 }
 
+.status-card.disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.status-card.disabled:hover {
+  transform: none;
+}
+
 .status-card.active {
   border-color: #16a34a;
 }

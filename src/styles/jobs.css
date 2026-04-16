@@ -1,0 +1,128 @@
+.jobtracker-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.jobtracker-header h1 {
+  margin: 0 0 6px;
+  color: #0f172a;
+}
+
+.jobtracker-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.status-dashboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.status-card {
+  border: 2px solid transparent;
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: left;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.status-card:hover {
+  transform: translateY(-3px);
+}
+
+.status-card.active {
+  border-color: #16a34a;
+}
+
+.status-card h3 {
+  margin: 0 0 12px;
+  color: #0f172a;
+  font-size: 1rem;
+}
+
+.status-card p {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.jobs-toolbar {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.add-job-button {
+  background: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.add-job-button:hover {
+  background: #15803d;
+}
+
+.add-job-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.protected-message {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fdba74;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.protected-message p {
+  margin: 0;
+}
+
+.jobs-table-wrapper {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.jobs-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.jobs-table thead {
+  background: #f1f5f9;
+}
+
+.jobs-table th,
+.jobs-table td {
+  text-align: left;
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.jobs-table th {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.jobs-table td {
+  color: #334155;
+}
+
+.empty-table {
+  text-align: center;
+  color: #64748b;
+}

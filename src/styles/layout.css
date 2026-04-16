@@ -51,7 +51,7 @@
   gap: 20px;
 }
 
-.sidebar a {
+.sidebar a , .sidebar .sidebar-link{
   display: flex;
   align-items: center;
   gap: 12px;
@@ -62,9 +62,10 @@
   border-radius: 8px;
   transition: background 0.2s, transform 0.2s;
   white-space: nowrap;
+  font: inherit;
 }
 
-.sidebar a:hover {
+.sidebar a:hover, .sidebar-link:hover {
   background-color: #1e293b;
   transform: translateX(2px);
 }
@@ -73,9 +74,6 @@
   background-color: #16a34a;
 }
 
-.sidebar-icon {
-  flex-shrink: 0;
-}
 
 .link-text {
   opacity: 1;
@@ -90,7 +88,14 @@
   max-width: 0;
 }
 
-.sidebar.collapsed a {
+.sidebar.collapsed a{
   justify-content: center;
   gap: 0;
+}
+
+
+.sidebar.collapsed .sidebar-link {
+  justify-content: center;
+  gap: 0;
+  padding: 12px 0;
 }

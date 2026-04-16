@@ -1,0 +1,96 @@
+.layout {
+  display: flex;
+}
+
+.content {
+  flex: 1;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  background-color: #0f172a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.sidebar button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.sidebar button:hover {
+  background-color: #1e293b;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background 0.2s, transform 0.2s;
+  white-space: nowrap;
+}
+
+.sidebar a:hover {
+  background-color: #1e293b;
+  transform: translateX(2px);
+}
+
+.sidebar a.active {
+  background-color: #16a34a;
+}
+
+.sidebar-icon {
+  flex-shrink: 0;
+}
+
+.link-text {
+  opacity: 1;
+  max-width: 160px;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 0.2s ease, max-width 0.25s ease;
+}
+
+.link-text.hidden {
+  opacity: 0;
+  max-width: 0;
+}
+
+.sidebar.collapsed a {
+  justify-content: center;
+  gap: 0;
+}

@@ -1,9 +1,11 @@
 import Sidebar from "./Sidebar";
+import "../../styles/layout.css";
 
-function MainLayout() {
+function MainLayout({ children }) {
   return (
-    <div>
+    <div className="layout">
       <Sidebar />
+      <main className="content">{children}</main>
     </div>
   );
 }

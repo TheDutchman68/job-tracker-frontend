@@ -52,8 +52,7 @@ function LoginPage() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>JobPilot</h1>
-        <h2>Login</h2>
+        <h1>Login</h1>
         <p>Access your account to manage your job applications.</p>
 
         <form onSubmit={handleSubmit} className="auth-form">

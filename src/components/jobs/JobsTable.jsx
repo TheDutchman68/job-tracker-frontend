@@ -23,7 +23,7 @@ function JobsTable({ jobs, onDeleteJob, onEditJob, onStatusChange }) {
                 <td>
                   <select
                     className="status-select"
-                    value={statusValues[job.status]}
+                    value={job.status}
                     onChange={(e) => onStatusChange(job.id, Number(e.target.value))}
                   >
                     <option value={statusValues.Applied}>Applied</option>

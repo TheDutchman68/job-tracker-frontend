@@ -1,106 +1,114 @@
-import { useState } from "react";
-import { X } from 'lucide-react';
+import { useEffect, useState } from "react";
 import { statusValues } from "../../utils/statusMap";
-function JobModal({ isOpen, onClose, onAddJob}){
-    const [formData, setFormData] = useState({
-        company: "",
+
+function JobModal({ isOpen, onClose, onSaveJob, editingJob }) {
+  const [formData, setFormData] = useState({
+    position: "",
+    company: "",
+    status: statusValues.Applied,
+    location: "",
+  });
+
+  const [errors, setErrors] = useState({
+    position: "",
+    company: "",
+    location: "",
+  });
+
+  useEffect(() => {
+    if (editingJob) {
+      setFormData({
+        position: editingJob.position || "",
+        company: editingJob.company || "",
+        status: editingJob.status ?? statusValues.Applied,
+        location: editingJob.location || "",
+      });
+    } else {
+      setFormData({
         position: "",
-        status: "Applied",
-        location: "",
-    });
-
-    const [errors, setErrors] = useState({
         company: "",
-        position: "",
+        status: statusValues.Applied,
         location: "",
-    });
-
-    if (!isOpen) return null;
-
-    const validateForm = () => {
-        const newErrors = {
-            company: "",
-            position: "",
-            location: "",
-        };
-
-        let isValid = true;
-
-        if (!formData.company.trim()) {
-            newErrors.company = "Company is required.";
-            isValid = false;
-        } 
-
-        if (!formData.position.trim()) {
-            newErrors.position = "Job position is required";
-            isValid = false;
-        }
-        if (!formData.location.trim()) {
-            newErrors.location = "Location is required.";
-            isValid = false;
-        }
-
-        setErrors(newErrors);
-        return isValid;
+      });
     }
 
-      const handleChange = (e) => {
-        const { name, value } = e.target;
+    setErrors({
+      position: "",
+      company: "",
+      location: "",
+    });
+  }, [editingJob, isOpen]);
 
-        setFormData((prev) => ({...prev, [name]: value, }));
+  if (!isOpen) return null;
 
-        setErrors((prev) => ({...prev,[name]: "",}));
+  const validateForm = () => {
+    const newErrors = {
+      position: "",
+      company: "",
+      location: "",
     };
 
-     const handleSubmit = (e) => {
-        e.preventDefault();
+    let isValid = true;
 
-        if (!validateForm()) return;
+    if (!formData.position.trim()) {
+      newErrors.position = "Job position is required.";
+      isValid = false;
+    }
 
-  
+    if (!formData.company.trim()) {
+      newErrors.company = "Company is required.";
+      isValid = false;
+    }
 
-        const newJob = {
-          position: formData.position,
-          company: formData.company,
-          status: statusValues[formData.status],
-          location: formData.location,
-        };
+    if (!formData.location.trim()) {
+      newErrors.location = "Location is required.";
+      isValid = false;
+    }
 
-        onAddJob(newJob);
+    setErrors(newErrors);
+    return isValid;
+  };
 
-        setFormData({
-        position: "",
-        company: "",
-        status: "Applied",
-        location: "",
-        });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-        setErrors({
-        position: "",
-        company: "",
-        location: "",
-        });
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "status" ? Number(value) : value,
+    }));
 
-        onClose();
-    };
-      return (
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    onSaveJob(formData);
+  };
+
+  return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="job-modal" onClick={(e) => e.stopPropagation()}>
         <div className="job-modal-header">
-          <h2>Add a New Job</h2>
+          <h2>{editingJob ? "Edit Job" : "Add Job"}</h2>
           <button type="button" className="modal-close-btn" onClick={onClose}>
-              <X />
+            ✕
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="job-modal-form">
           <div className="form-group">
-            <label htmlFor="position">Position</label>
+            <label htmlFor="position">Job Position</label>
             <input
               id="position"
               name="position"
               type="text"
-              placeholder="Job position"
+              placeholder="Enter job position"
               value={formData.position}
               onChange={handleChange}
               className={errors.position ? "input-error" : ""}
@@ -114,7 +122,7 @@ function JobModal({ isOpen, onClose, onAddJob}){
               id="company"
               name="company"
               type="text"
-              placeholder="Company name"
+              placeholder="Enter company name"
               value={formData.company}
               onChange={handleChange}
               className={errors.company ? "input-error" : ""}
@@ -130,10 +138,10 @@ function JobModal({ isOpen, onClose, onAddJob}){
               value={formData.status}
               onChange={handleChange}
             >
-              <option value="Applied">Applied</option>
-              <option value="Interview">Interview</option>
-              <option value="Rejected">Rejected</option>
-              <option value="Offer">Offer</option>
+              <option value={statusValues.Applied}>Applied</option>
+              <option value={statusValues.Interview}>Interview</option>
+              <option value={statusValues.Rejected}>Rejected</option>
+              <option value={statusValues.Offer}>Offer</option>
             </select>
           </div>
 
@@ -143,7 +151,7 @@ function JobModal({ isOpen, onClose, onAddJob}){
               id="location"
               name="location"
               type="text"
-              placeholder="Location"
+              placeholder="Enter location"
               value={formData.location}
               onChange={handleChange}
               className={errors.location ? "input-error" : ""}
@@ -156,7 +164,7 @@ function JobModal({ isOpen, onClose, onAddJob}){
               Cancel
             </button>
             <button type="submit" className="modal-primary-btn">
-              Add Job
+              {editingJob ? "Save Changes" : "Add Job"}
             </button>
           </div>
         </form>

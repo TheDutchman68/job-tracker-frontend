@@ -1,6 +1,7 @@
-import { Trash2 } from "lucide-react";
-import { statusLabels } from "../../utils/statusMap";
-function JobsTable({ jobs, onDeleteJob }) {
+import { Trash2, Pencil } from "lucide-react";
+import { statusValues } from "../../utils/statusMap";
+
+function JobsTable({ jobs, onDeleteJob, onEditJob, onStatusChange }) {
   return (
     <div className="jobs-table-wrapper">
       <table className="jobs-table">
@@ -10,7 +11,7 @@ function JobsTable({ jobs, onDeleteJob }) {
             <th>Company</th>
             <th>Status</th>
             <th>Location</th>
-            <th></th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -19,21 +20,47 @@ function JobsTable({ jobs, onDeleteJob }) {
               <tr key={job.id}>
                 <td>{job.position}</td>
                 <td>{job.company}</td>
-                <td>{statusLabels[job.status]}</td>
+                <td>
+                  <select
+                    className="status-select"
+                    value={statusValues[job.status]}
+                    onChange={(e) => onStatusChange(job.id, Number(e.target.value))}
+                  >
+                    <option value={statusValues.Applied}>Applied</option>
+                    <option value={statusValues.Interview}>Interview</option>
+                    <option value={statusValues.Rejected}>Rejected</option>
+                    <option value={statusValues.Offer}>Offer</option>
+                  </select>
+                </td>
                 <td>{job.location}</td>
                 <td>
-                    <button type="button" className="delete-btn" onClick={() => onDeleteJob(job.id)}>
+                  <div className="actions-cell">
+                    <button
+                      type="button"
+                      className="edit-btn"
+                      onClick={() => onEditJob(job)}
+                    >
+                      <Pencil size={18} />
+                    </button>
+                    <button
+                      type="button"
+                      className="delete-btn"
+                      onClick={() => onDeleteJob(job.id)}
+                    >
                       <Trash2 size={18} />
                     </button>
+                  </div>
                 </td>
               </tr>
             ))
           ) : (
-            <tr>
-              <td className="empty-table">
-                No jobs found.
-              </td>
-            </tr>
+              <tr>
+                <td colSpan="5">
+                  <div className="empty-table">
+                    No jobs found. Add your first Job!
+                  </div>
+                </td>
+              </tr>
           )}
         </tbody>
       </table>

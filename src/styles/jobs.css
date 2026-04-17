@@ -61,6 +61,39 @@
   color: #16a34a;
 }
 
+.status-select {
+  padding: 10px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: white;
+  font-size: 0.95rem;
+  color: #0f172a;
+  
+}
+
+.status-select:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+
+.edit-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.edit-btn:hover {
+  background: #dbeafe;
+  transform: scale(1.1);
+}
+
 .jobs-toolbar {
   display: flex;
   justify-content: flex-start;
@@ -134,17 +167,28 @@
 .jobs-table th:last-child,
 .jobs-table td:last-child {
   width: 100px;
+  
 }
 
-.jobs-table td:last-child {
+/* .jobs-table td:last-child {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
+} */
+
+.actions-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .empty-table {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #64748b;
+  font-weight: 500;
 }
 
 .delete-btn {

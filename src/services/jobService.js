@@ -13,3 +13,8 @@ export async function createJob(jobData) {
 export async function deleteJob(id) {
   await api.delete(`/jobs/${id}`);
 }
+
+export async function updateJob(id, jobData) {
+  const response = await api.put(`/jobs/${id}`, jobData);
+  return response.data;
+}

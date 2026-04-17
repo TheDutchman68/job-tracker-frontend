@@ -5,7 +5,7 @@ import JobsToolbar from "../components/jobs/JobsToolbar";
 import JobsTable from "../components/jobs/JobsTable";
 import ProtectedMessage from "../components/common/ProtectedMessage";
 import JobModal from "../components/jobs/JobModal";
-import { getJobs, createJob, deleteJob } from "../services/jobService";
+import { getJobs, createJob, deleteJob, updateJob } from "../services/jobService";
 import "../styles/jobs.css";
 
 function JobTrackerPage() {
@@ -13,6 +13,7 @@ function JobTrackerPage() {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [jobs, setJobs] = useState([]);
+  const [editingJob, setEditingJob] = useState(null);
 
   useEffect(() => {
   if (!isAuthenticated) return;
@@ -41,19 +42,55 @@ function JobTrackerPage() {
 
   const filteredJobs = selectedStatus !== null ? jobs.filter((job) => job.status === selectedStatus) : jobs;
 
-  const handleAddJob = async (newJob) => {
+  const handleSaveJob = async (jobData) => {
   try {
-    const created = await createJob(newJob);
-    setJobs((prev) => [created, ...prev]);
+    if (editingJob) {
+      const updated = await updateJob(editingJob.id, jobData);
+
+      setJobs((prev) =>
+        prev.map((job) => (job.id === editingJob.id ? updated : job))
+      );
+    } else {
+      const created = await createJob(jobData);
+      setJobs((prev) => [created, ...prev]);
+    }
+
+    setIsModalOpen(false);
+    setEditingJob(null);
   } catch (err) {
-    console.error("Failed to create job", err);
+    console.error("Failed to save job", err);
+  }
+};
+const handleStatusChange = async (id, newStatus) => {
+  const currentJob = jobs.find((job) => job.id === id);
+  if (!currentJob) return;
+
+  try {
+    const updated = await updateJob(id, {
+      position: currentJob.position,
+      company: currentJob.company,
+      status: newStatus,
+      location: currentJob.location,
+    });
+
+    setJobs((prev) =>
+      prev.map((job) => (job.id === id ? updated : job))
+    );
+  } catch (err) {
+    console.error("Failed to update status", err);
   }
 };
 
   const handleOpenModal = () => {
     if (!isAuthenticated) return;
+    setEditingJob(null);
     setIsModalOpen(true);
   };
+
+  const handleEditJob = (job) => {
+  setEditingJob(job);
+  setIsModalOpen(true);
+};
 
   return (
     <section className="jobtracker-page">
@@ -79,13 +116,18 @@ function JobTrackerPage() {
           onAddJob={handleOpenModal}
         />
 
-        <JobsTable jobs={filteredJobs} onDeleteJob={handleDeleteJob} />
+        <JobsTable jobs={filteredJobs} onDeleteJob={handleDeleteJob} onEditJob={handleEditJob} 
+        onStatusChange={handleStatusChange}/>
 
         <JobModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onAddJob={handleAddJob}
-          />
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingJob(null);
+        }}
+        onSaveJob={handleSaveJob}
+        editingJob={editingJob}
+      />
 
       </>
       

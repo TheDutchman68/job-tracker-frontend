@@ -57,7 +57,7 @@ function JobsTable({ jobs, onDeleteJob, onEditJob, onStatusChange }) {
               <tr>
                 <td colSpan="5">
                   <div className="empty-table">
-                    No jobs found. Add your first Job!
+                    You have no jobs. Add your first Job!
                   </div>
                 </td>
               </tr>

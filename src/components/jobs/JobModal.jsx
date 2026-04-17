@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { statusValues } from "../../utils/statusMap";
-
+import { X } from 'lucide-react';
 function JobModal({ isOpen, onClose, onSaveJob, editingJob }) {
   const [formData, setFormData] = useState({
     position: "",
@@ -97,7 +97,7 @@ function JobModal({ isOpen, onClose, onSaveJob, editingJob }) {
         <div className="job-modal-header">
           <h2>{editingJob ? "Edit Job" : "Add Job"}</h2>
           <button type="button" className="modal-close-btn" onClick={onClose}>
-            ✕
+             <X />
           </button>
         </div>
 

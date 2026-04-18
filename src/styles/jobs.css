@@ -314,6 +314,12 @@
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
 }
 
+.job-modal-form .field-error {
+  margin: 1px 0 0;
+  font-size: 0.74rem;
+  color: #dc2626;
+}
+
 .job-modal-actions {
   display: flex;
   justify-content: flex-end;
@@ -352,9 +358,4 @@
 
 .modal-primary-btn:hover {
   background: #15803d;
-}
-.job-modal-form .field-error {
-  margin: 1px 0 0;
-  font-size: 0.74rem;
-  color: #dc2626;
 }

@@ -12,24 +12,72 @@ function RegisterPage() {
     password: "",
   });
 
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+    general: "",
+  });
+
   const [loading, setLoading] = useState(false);
 
+  const validateForm = () => {
+    const newErrors = {
+      name: "",
+      email: "",
+      password: "",
+      general: "",
+    };
+
+    let isValid = true;
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required.";
+      isValid = false;
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters.";
+      isValid = false;
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required.";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+      isValid = false;
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = "Password is required.";
+      isValid = false;
+    } else if (formData.password.trim().length < 6) {
+      newErrors.password = "Password must be at least 6 characters.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+      general: "",
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
-    if (!formData.name || !formData.email || !formData.password) {
-      setError("All fields are required.");
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
       setLoading(true);
@@ -38,9 +86,11 @@ function RegisterPage() {
 
       navigate("/login");
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Registration failed. Please try again."
-      );
+      setErrors((prev) => ({
+        ...prev,
+        general:
+          err.response?.data?.message || "Registration failed. Please try again.",
+      }));
     } finally {
       setLoading(false);
     }
@@ -52,7 +102,7 @@ function RegisterPage() {
         <h1>Register</h1>
         <p>Create an account to manage your job applications.</p>
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        <form onSubmit={handleSubmit} className="auth-form" noValidate>
           <div className="form-group">
             <label htmlFor="name">Name</label>
             <input
@@ -62,7 +112,9 @@ function RegisterPage() {
               placeholder="Enter your name"
               value={formData.name}
               onChange={handleChange}
+              className={errors.name ? "input-error" : ""}
             />
+            {errors.name && <p className="field-error">{errors.name}</p>}
           </div>
 
           <div className="form-group">
@@ -74,7 +126,9 @@ function RegisterPage() {
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
+              className={errors.email ? "input-error" : ""}
             />
+            {errors.email && <p className="field-error">{errors.email}</p>}
           </div>
 
           <div className="form-group">
@@ -86,10 +140,12 @@ function RegisterPage() {
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
+              className={errors.password ? "input-error" : ""}
             />
+            {errors.password && <p className="field-error">{errors.password}</p>}
           </div>
 
-          {error && <p className="auth-error">{error}</p>}
+          {errors.general && <p className="auth-error">{errors.general}</p>}
 
           <button type="submit" className="auth-button" disabled={loading}>
             {loading ? "Registering..." : "Register"}

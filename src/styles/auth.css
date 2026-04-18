@@ -104,3 +104,9 @@
   font-size: 0.74rem;
   color: #dc2626;
 }
+
+.auth-error {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: #dc2626;
+}

@@ -15,7 +15,16 @@ function JobTrackerPage() {
   const [jobs, setJobs] = useState([]);
   const [allJobs, setAllJobs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [editingJob, setEditingJob] = useState(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   const fetchJobs = useCallback(async () => {
     if (!isAuthenticated) return;
@@ -27,8 +36,8 @@ function JobTrackerPage() {
         filters.status = selectedStatus;
       }
 
-      if (searchTerm.trim()) {
-        filters.search = searchTerm.trim();
+      if (debouncedSearchTerm.trim()) {
+        filters.search = debouncedSearchTerm.trim();
       }
 
       const [filteredData, allData] = await Promise.all([
@@ -41,7 +50,7 @@ function JobTrackerPage() {
     } catch (err) {
       console.error("Failed to load jobs", err.response?.data || err.message);
     }
-  }, [isAuthenticated, selectedStatus, searchTerm]);
+  }, [isAuthenticated, selectedStatus, debouncedSearchTerm]);
 
   useEffect(() => {
     fetchJobs();
@@ -129,7 +138,7 @@ function JobTrackerPage() {
             onAddJob={handleOpenModal}
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
-            hasJobs={jobs.length > 0}
+            hasJobs={allJobs.length > 0}
           />
 
           <JobsTable

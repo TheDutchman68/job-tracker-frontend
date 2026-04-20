@@ -103,6 +103,7 @@ function LoginPage() {
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
+              disabled={loading}
               className={errors.email ? "input-error" : ""}
             />
             {errors.email && <p className="field-error">{errors.email}</p>}
@@ -117,15 +118,22 @@ function LoginPage() {
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
+              disabled={loading}
               className={errors.password ? "input-error" : ""}
             />
             {errors.password && <p className="field-error">{errors.password}</p>}
           </div>
 
           {errors.general && <p className="auth-error">{errors.general}</p>}
-
           <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+            {loading ? (
+              <>
+                <span className="spinner"></span>
+                <span>Logging in...</span>
+              </>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
 

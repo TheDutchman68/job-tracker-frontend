@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { statusValues } from "../../utils/statusMap";
 import { X } from 'lucide-react';
-function JobModal({ isOpen, onClose, onSaveJob, editingJob }) {
+function JobModal({ isOpen, onClose, onSaveJob, editingJob, isSaving}) {
   const [formData, setFormData] = useState({
     position: "",
     company: "",
@@ -92,11 +92,11 @@ function JobModal({ isOpen, onClose, onSaveJob, editingJob }) {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={() => !isSaving && onClose()}>
       <div className="job-modal" onClick={(e) => e.stopPropagation()}>
         <div className="job-modal-header">
           <h2>{editingJob ? "Edit Job" : "Add Job"}</h2>
-          <button type="button" className="modal-close-btn" onClick={onClose}>
+          <button type="button" className="modal-close-btn" onClick={onClose} disabled={isSaving}>
              <X />
           </button>
         </div>
@@ -111,6 +111,7 @@ function JobModal({ isOpen, onClose, onSaveJob, editingJob }) {
               placeholder="Enter job position"
               value={formData.position}
               onChange={handleChange}
+              disabled={isSaving}
               className={errors.position ? "input-error" : ""}
             />
             {errors.position && <p className="field-error">{errors.position}</p>}
@@ -125,6 +126,7 @@ function JobModal({ isOpen, onClose, onSaveJob, editingJob }) {
               placeholder="Enter company name"
               value={formData.company}
               onChange={handleChange}
+              disabled={isSaving}
               className={errors.company ? "input-error" : ""}
             />
             {errors.company && <p className="field-error">{errors.company}</p>}
@@ -137,6 +139,7 @@ function JobModal({ isOpen, onClose, onSaveJob, editingJob }) {
               name="status"
               value={formData.status}
               onChange={handleChange}
+              disabled={isSaving}
             >
               <option value={statusValues.Applied}>Applied</option>
               <option value={statusValues.Interview}>Interview</option>
@@ -154,17 +157,25 @@ function JobModal({ isOpen, onClose, onSaveJob, editingJob }) {
               placeholder="Enter location"
               value={formData.location}
               onChange={handleChange}
+              disabled={isSaving}
               className={errors.location ? "input-error" : ""}
             />
             {errors.location && <p className="field-error">{errors.location}</p>}
           </div>
 
           <div className="job-modal-actions">
-            <button type="button" className="modal-secondary-btn" onClick={onClose}>
+            <button type="button" className="modal-secondary-btn" onClick={onClose} disabled={isSaving}>
               Cancel
             </button>
-            <button type="submit" className="modal-primary-btn">
-              {editingJob ? "Save Changes" : "Add Job"}
+            <button type="submit" className="modal-primary-btn" disabled={isSaving}>
+              {isSaving ? (
+                <>
+                  <span className="spinner "></span>
+                  <span>{editingJob ? "Saving..." : "Adding job..."}</span>
+                </>
+              ) : (
+                editingJob ? "Save Changes" : "Add Job"
+              )}
             </button>
           </div>
         </form>

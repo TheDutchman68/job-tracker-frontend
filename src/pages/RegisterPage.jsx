@@ -112,6 +112,7 @@ function RegisterPage() {
               placeholder="Enter your name"
               value={formData.name}
               onChange={handleChange}
+              disabled={loading}
               className={errors.name ? "input-error" : ""}
             />
             {errors.name && <p className="field-error">{errors.name}</p>}
@@ -126,6 +127,7 @@ function RegisterPage() {
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
+              disabled={loading}
               className={errors.email ? "input-error" : ""}
             />
             {errors.email && <p className="field-error">{errors.email}</p>}
@@ -140,6 +142,7 @@ function RegisterPage() {
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
+              disabled={loading}
               className={errors.password ? "input-error" : ""}
             />
             {errors.password && <p className="field-error">{errors.password}</p>}
@@ -148,7 +151,14 @@ function RegisterPage() {
           {errors.general && <p className="auth-error">{errors.general}</p>}
 
           <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? "Registering..." : "Register"}
+            {loading ? (
+              <>
+                <span className="spinner"></span>
+                <span>Registering...</span>
+              </>
+            ) : (
+              "Register"
+            )}
           </button>
         </form>
 

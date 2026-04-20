@@ -17,6 +17,10 @@ function JobTrackerPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [editingJob, setEditingJob] = useState(null);
+  const [isSavingJob, setIsSavingJob] = useState(false);
+  const [deletingJobId, setDeletingJobId] = useState(null);
+  const [updatingJobId, setUpdatingJobId] = useState(null);
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -30,6 +34,7 @@ function JobTrackerPage() {
     if (!isAuthenticated) return;
 
     try {
+
       const filters = {};
 
       if (selectedStatus !== null) {
@@ -49,6 +54,7 @@ function JobTrackerPage() {
       setAllJobs(allData);
     } catch (err) {
       console.error("Failed to load jobs", err.response?.data || err.message);
+  
     }
   }, [isAuthenticated, selectedStatus, debouncedSearchTerm]);
 
@@ -58,15 +64,32 @@ function JobTrackerPage() {
 
   const handleDeleteJob = async (id) => {
     try {
+      setDeletingJobId(id);
       await deleteJob(id);
       await fetchJobs();
     } catch (err) {
       console.error("Failed to delete job", err.response?.data || err.message);
+    } finally{
+      setDeletingJobId(null);
     }
   };
 
+  useEffect(() => {
+  if (selectedStatus === null) return;
+
+  const hasSelectedStatusJobs = allJobs.some(
+    (job) => job.status === selectedStatus
+  );
+
+  if (!hasSelectedStatusJobs) {
+    setSelectedStatus(null);
+  }
+}, [allJobs, selectedStatus]);
+
   const handleSaveJob = async (jobData) => {
     try {
+      setIsSavingJob(true);
+
       if (editingJob) {
         await updateJob(editingJob.id, jobData);
       } else {
@@ -78,6 +101,8 @@ function JobTrackerPage() {
       await fetchJobs();
     } catch (err) {
       console.error("Failed to save job", err.response?.data || err.message);
+    } finally {
+      setIsSavingJob(false);
     }
   };
 
@@ -93,6 +118,7 @@ function JobTrackerPage() {
     };
 
     try {
+      setUpdatingJobId(id);
       await updateJob(id, payload);
       await fetchJobs();
     } catch (err) {
@@ -100,6 +126,8 @@ function JobTrackerPage() {
         "Failed to update status",
         err.response?.data || err.message
       );
+    } finally{
+      setUpdatingJobId(null);
     }
   };
 
@@ -143,19 +171,23 @@ function JobTrackerPage() {
 
           <JobsTable
             jobs={jobs}
+            updatingJobId={updatingJobId}
             onDeleteJob={handleDeleteJob}
             onEditJob={handleEditJob}
             onStatusChange={handleStatusChange}
+            deletingJobId={deletingJobId}
           />
 
           <JobModal
             isOpen={isModalOpen}
             onClose={() => {
-              setIsModalOpen(false);
-              setEditingJob(null);
+            if (isSavingJob) return;
+            setIsModalOpen(false);
+            setEditingJob(null);
             }}
             onSaveJob={handleSaveJob}
             editingJob={editingJob}
+            isSaving={isSavingJob}
           />
         </>
       )}
